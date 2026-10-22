@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Clock</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            color: #fff;
+        }
+
+        .clock-container {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(12px);
+            padding: 40px 50px;
+            border-radius: 24px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        h1 {
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            letter-spacing: 2px;
+            color: #b2dfdb;
+            text-transform: uppercase;
+        }
+
+        .clock-display {
+            display: flex;
+            justify-content: center;
+            align-items: baseline;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+
+        .time {
+            font-size: 4.5rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            font-variant-numeric: tabular-nums;
+            color: #00ffd5;
+            text-shadow: 0 0 15px rgba(0, 255, 213, 0.4);
+        }
+
+        .format-indicator {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #ffeb3b;
+        }
+
+        .date-display {
+            font-size: 1.1rem;
+            color: #cfd8dc;
+            margin-bottom: 25px;
+            letter-spacing: 1px;
+        }
+
+        button {
+            padding: 10px 24px;
+            font-size: 1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            background-color: #00ffd5;
+            color: #0f2027;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 255, 213, 0.2);
+        }
+
+        button:hover {
+            background-color: #00bfa5;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 255, 213, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="clock-container">
+        <h1>Digital Clock</h1>
+        
+        <!-- Current Date -->
+        <div class="date-display" id="date-display">Loading date...</div>
+
+        <!-- Clock Time & AM/PM Indicator -->
+        <div class="clock-display">
+            <div class="time" id="time-display">00:00:00</div>
+            <div class="format-indicator" id="ampm-display"></div>
+        </div>
+
+        <!-- Format Toggle Button -->
+        <button id="format-btn">Switch to 12-Hour</button>
+    </div>
+
+    <script>
+        const timeDisplay = document.getElementById('time-display');
+        const ampmDisplay = document.getElementById('ampm-display');
+        const dateDisplay = document.getElementById('date-display');
+        const formatBtn = document.getElementById('format-btn');
+
+        let is12HourFormat = false; // Default starts in 24-hour format
+
+        function updateClock() {
+            const now = new Date();
+            
+            let hours = now.getHours();
+            const minutes = now.getMinutes();
+            const seconds = now.getSeconds();
+            
+            // Format Date (e.g., Thursday, October 22, 2026)
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            dateDisplay.textContent = now.toLocaleDateString(undefined, options);
+
+            let ampm = '';
+
+            if (is12HourFormat) {
+                ampm = hours >= 12 ? 'PM' : 'AM';
+                hours = hours % 12;
+                hours = hours ? hours : 12; // the hour '0' should be '12'
+            }
+
+            // Add leading zeros
+            const formattedHours = String(hours).padStart(2, '0');
+            const formattedMinutes = String(minutes).padStart(2, '0');
+            const formattedSeconds = String(seconds).padStart(2, '0');
+
+            timeDisplay.textContent = `${formattedHours}:${formattedMinutes}:${formattedSeconds}`;
+            ampmDisplay.textContent = ampm;
+        }
+
+        // Toggle button event listener
+        formatBtn.addEventListener('click', () => {
+            is12HourFormat = !is12HourFormat;
+            formatBtn.textContent = is12HourFormat ? "Switch to 24-Hour" : "Switch to 12-Hour";
+            updateClock();
+        });
+
+        // Update clock immediately and then every second
+        updateClock();
+        setInterval(updateClock, 1000);
+    </script>
+</body>
+</html>
